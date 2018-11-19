@@ -90,7 +90,7 @@ auctionController.route('/')
                 && message.attachments[0].fields[0]
                 && message.attachments[0].fields[0].value
             ) {
-                console.log(message.attachments[0].fields[0].value);
+                console.log('found value', message.attachments[0].fields[0].value);
                 let price = message.attachments[0].fields[0].value;
                 actions.forEach((action) => {
                     if (action.type === 'button' && action.name === 'raise') {
@@ -99,7 +99,7 @@ auctionController.route('/')
                 });
                 return res.json(message);
             } else {
-                console.log(message);
+                console.log('message not found', message);
                 return res.json({
                     response_type: 'ephemeral',
                     text: 'Invalid command'
