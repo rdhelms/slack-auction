@@ -18,7 +18,7 @@
         "restart": "npm run build-clean && npm lint-and-start",
         "build": "tsc",
         "build-clean": "del-cli dist && npm run build",
-        "watch": "tsc-watch --onSuccess 'npm lint-and-start'",
+        "watch": "tsc-watch --onSuccess 'npm run lint-and-start'",
         "lint": "tslint --project tsconfig.json --config tslint.json --format verbose",
         "lint-and-start": "npm run lint && npm start",
         "test": "npm run build-clean && npm run lint && cross-env NODE_ENV=test mocha --recursive dist/test --delay -r dotenv/config",

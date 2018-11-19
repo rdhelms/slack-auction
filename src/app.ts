@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { indexController } from './controllers/index.controller';
+import { auctionController } from './controllers/auction.controller';
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 });
 
 // Routes and Controllers
-app.use('/', indexController);
+app.use('/', auctionController);
 
 /* istanbul ignore next */
 if (process.env.NODE_ENV !== 'test') {
