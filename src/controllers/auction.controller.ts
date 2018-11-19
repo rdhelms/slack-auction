@@ -96,7 +96,7 @@ auctionController.route('/')
                 const price = message.attachments[0].fields[0].value;
                 actions.forEach((action) => {
                     if (action.type === 'button' && action.name === 'raise') {
-                        message.attachments[0].fields[0].value = String(Number(price) + Number(action.value.slice(1)));
+                        message.attachments[0].fields[0].value = String(Number(price.slice(1)) + Number(action.value));
                     }
                 });
                 return res.json(message);
