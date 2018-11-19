@@ -99,7 +99,8 @@ auctionController.route('/')
                 });
                 return res.json(message);
             } else {
-                console.log(JSON.stringify(body.payload.original_message, null, 4));
+                console.log(typeof body.payload);
+                console.log(JSON.parse(String(body.payload)));
                 return res.json(body.payload.original_message);
             }
         }
