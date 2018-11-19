@@ -27,6 +27,8 @@ app.use((req, res, next) => {
     next();
 });
 
+// TODO: Add middleware to verify the request is from slack
+
 // Routes and Controllers
 app.use('/', auctionController);
 
