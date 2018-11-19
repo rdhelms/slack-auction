@@ -37,7 +37,6 @@ auctionController.route('/')
             response_type: 'in_channel',
             text: `<@${body.user_id}> has created an auction!`,
             attachments: [{
-                author_name: `<@${body.user_id}>`,
                 fallback: itemName,
                 title: itemName,
                 text: itemDescription,
