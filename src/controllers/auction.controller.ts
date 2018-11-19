@@ -72,6 +72,7 @@ auctionController.route('/')
     .post(async (req, res) => {
         if (!req.body) {
             return res.json({
+                response_type: 'ephemeral',
                 text: 'Invalid command'
             });
         }
@@ -100,6 +101,7 @@ auctionController.route('/')
             } else {
                 console.log(message);
                 return res.json({
+                    response_type: 'ephemeral',
                     text: 'Invalid command'
                 });
             }
@@ -108,6 +110,7 @@ auctionController.route('/')
         // Check that the user provided all the necessary info
         if (!body.text || body.text.split(' ').length < 3) {
             return res.json({
+                response_type: 'ephemeral',
                 text: 'You must provide an item name, price, and description!'
             });
         }
