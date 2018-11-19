@@ -45,6 +45,7 @@ auctionController.route('/')
                     title: 'Price',
                     value: `$${itemPrice}`
                 }],
+                callback_id: `${itemName}-${body.user_name}`,
                 actions: [{
                     name: 'raise',
                     text: 'Raise $1',
