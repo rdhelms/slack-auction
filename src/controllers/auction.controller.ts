@@ -99,11 +99,8 @@ auctionController.route('/')
                 });
                 return res.json(message);
             } else {
-                console.log('message not found', body, body.payload, body.payload.original_message);
-                return res.json({
-                    response_type: 'ephemeral',
-                    text: 'Invalid command'
-                });
+                console.log(JSON.stringify(body.payload, null, 4));
+                return res.json(body.payload.original_message);
             }
         }
 
