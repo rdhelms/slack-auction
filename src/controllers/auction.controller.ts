@@ -26,7 +26,7 @@ interface ISlackAction {
         message_ts: string;
         attachment_id: string;
         token: string;
-        original_message: ISlackRequest;
+        original_message: ISlackResponse;
         response_url: string;
         trigger_id: string;
     };
@@ -46,6 +46,28 @@ interface ISlackRequest {
     trigger_id: string;
 }
 
+interface ISlackResponse {
+    response_type: 'in_channel' | 'ephemeral';
+    text: string;
+    attachments: {
+        fallback: string;
+        title: string;
+        text: string;
+        fields: {
+            title: string;
+            value: string;
+        }[];
+        callback_id: string;
+        actions: {
+            name: string;
+            text: string;
+            type: string;
+            value: unknown;
+        }[];
+        ts: number
+    }[];
+}
+
 auctionController.route('/')
     .post(async (req, res) => {
         if (!req.body) {
@@ -57,8 +79,28 @@ auctionController.route('/')
 
         // If the user triggered an action (like a button) we will have a payload
         if ('payload' in body) {
-            // TODO: Perform an actual update on the auction rather than reflecting the existing info
-            return res.json(body.payload.original_message);
+            const message = body.payload.original_message;
+            const actions = body.payload.actions;
+            if (
+                message 
+                && message.attachments 
+                && message.attachments[0] 
+                && message.attachments[0].fields 
+                && message.attachments[0].fields[0]
+                && message.attachments[0].fields[0].value
+            ) {
+                let price = message.attachments[0].fields[0].value;
+                actions.forEach((action) => {
+                    if (action.type === 'button' && action.name === 'raise') {
+                        price = String(Number(price) + Number(action.value));
+                    }
+                });
+                return res.json(message);
+            } else {
+                return res.json({
+                    text: 'Invalid command'
+                });
+            }
         }
 
         // Check that the user provided all the necessary info
@@ -72,7 +114,7 @@ auctionController.route('/')
         const itemPrice = auctionDetails[1];
         const itemDescription = auctionDetails[2];
 
-        return res.json({
+        const response: ISlackResponse = {
             response_type: 'in_channel',
             text: `<@${body.user_id}> has created an auction!`,
             attachments: [{
@@ -102,7 +144,9 @@ auctionController.route('/')
                 }],
                 ts: Math.round(Date.now() / 1000)
             }]
-        });
+        };
+
+        return res.json(response);
     });
 
 export { auctionController };
