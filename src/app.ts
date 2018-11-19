@@ -20,13 +20,6 @@ app.use(bodyParser.json({
     limit: '50mb'
 }));
 
-app.use((req, res, next) => {
-    console.log(req.method); // tslint:disable-line
-    console.log(req.url); // tslint:disable-line
-    console.log(req.body); // tslint:disable-line
-    next();
-});
-
 // TODO: Add middleware to verify the request is from slack
 
 // Routes and Controllers
