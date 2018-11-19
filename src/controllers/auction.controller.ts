@@ -93,16 +93,14 @@ auctionController.route('/')
                 && message.attachments[0].fields[0]
                 && message.attachments[0].fields[0].value
             ) {
-                console.log('found value', message.attachments[0].fields[0].value);
-                let price = message.attachments[0].fields[0].value;
+                const price = message.attachments[0].fields[0].value;
                 actions.forEach((action) => {
                     if (action.type === 'button' && action.name === 'raise') {
-                        price = String(Number(price) + Number(action.value.slice(1)));
+                        message.attachments[0].fields[0].value = String(Number(price) + Number(action.value.slice(1)));
                     }
                 });
                 return res.json(message);
             } else {
-                console.log('no value');
                 return res.json(payload.original_message);
             }
         }
