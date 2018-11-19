@@ -24,7 +24,7 @@ interface ISlackPayload {
     user: {
         id: string;
         name: string;
-    },
+    };
     action_ts: string;
     message_ts: string;
     attachment_id: string;
@@ -96,7 +96,7 @@ auctionController.route('/')
                 const price = message.attachments[0].fields[0].value;
                 actions.forEach((action) => {
                     if (action.type === 'button' && action.name === 'raise') {
-                        message.attachments[0].fields[0].value = String(Number(price.slice(1)) + Number(action.value));
+                        message.attachments[0].fields[0].value = `$${Number(price.slice(1)) + Number(action.value)}`;
                     }
                 });
                 return res.json(message);
