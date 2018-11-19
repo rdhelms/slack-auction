@@ -34,7 +34,7 @@ auctionController.route('/')
         const itemDescription = auctionDetails[2];
 
         return res.json({
-            channel: body.channel_id,
+            responst_type: 'in_channel',
             text: `<@${body.user_id}> has created an auction!`,
             attachments: [{
                 author_name: `<@${body.user_id}>`,
@@ -62,7 +62,7 @@ auctionController.route('/')
                     type: 'button',
                     value: 10
                 }],
-                ts: Date.now()
+                ts: Math.round(Date.now() / 1000)
             }]
         });
     });
