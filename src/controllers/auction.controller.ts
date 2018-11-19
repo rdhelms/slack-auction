@@ -55,18 +55,18 @@ interface ISlackResponse {
         fallback: string;
         title: string;
         text: string;
-        fields: {
+        fields?: {
             title: string;
             value: string;
         }[];
-        callback_id: string;
-        actions: {
+        callback_id?: string;
+        actions?: {
             name: string;
             text: string;
             type: string;
             value: unknown;
         }[];
-        ts: number
+        ts?: number
     }[];
 }
 
@@ -93,12 +93,22 @@ auctionController.route('/')
                 && message.attachments[0].fields[0]
                 && message.attachments[0].fields[0].value
             ) {
-                const price = message.attachments[0].fields[0].value;
+                const oldPrice = message.attachments[0].fields[0].value;
+                let newPrice: string = oldPrice;
+                const currentWinner = {
+                    fallback: 'Current Winner',
+                    title: 'Current Winner',
+                    text: `<@${payload.user.id}>`,
+                };
                 actions.forEach((action) => {
                     if (action.type === 'button' && action.name === 'raise') {
-                        message.attachments[0].fields[0].value = `$${Number(price.slice(1)) + Number(action.value)}`;
+                        newPrice = `$${Number(oldPrice.slice(1)) + Number(action.value)}`;
                     }
                 });
+                if (newPrice !== oldPrice) {
+                    message.attachments[0].fields[0].value = newPrice;
+                    message.attachments[1] = currentWinner;
+                }
                 return res.json(message);
             } else {
                 return res.json(payload.original_message);
