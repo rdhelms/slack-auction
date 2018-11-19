@@ -1,35 +1,37 @@
 import express from 'express';
 const auctionController = express.Router();
 
-interface ISlackAction {
-    payload: {
+interface ISlackActionRaw {
+    payload: string;
+}
+
+interface ISlackPayload {
+    type: string;
+    actions: {
+        name: string;
+        value: string;
         type: string;
-        actions: {
-            name: string;
-            value: string;
-            type: string;
-        }[];
-        callback_id: string;
-        team: {
-            id: string;
-            domain: string;
-        };
-        channel: {
-            id: string;
-            name: string;
-        };
-        user: {
-            id: string;
-            name: string;
-        },
-        action_ts: string;
-        message_ts: string;
-        attachment_id: string;
-        token: string;
-        original_message: ISlackResponse;
-        response_url: string;
-        trigger_id: string;
+    }[];
+    callback_id: string;
+    team: {
+        id: string;
+        domain: string;
     };
+    channel: {
+        id: string;
+        name: string;
+    };
+    user: {
+        id: string;
+        name: string;
+    },
+    action_ts: string;
+    message_ts: string;
+    attachment_id: string;
+    token: string;
+    original_message: ISlackResponse;
+    response_url: string;
+    trigger_id: string;
 }
 
 interface ISlackRequest {
@@ -76,12 +78,13 @@ auctionController.route('/')
                 text: 'Invalid command'
             });
         }
-        const body = req.body as ISlackRequest | ISlackAction;
+        const body = req.body as ISlackRequest | ISlackActionRaw;
 
         // If the user triggered an action (like a button) we will have a payload
         if ('payload' in body) {
-            const message = body.payload.original_message;
-            const actions = body.payload.actions;
+            const payload = JSON.parse(body.payload) as ISlackPayload;
+            const message = payload.original_message;
+            const actions = payload.actions;
             if (
                 message 
                 && message.attachments 
@@ -94,14 +97,13 @@ auctionController.route('/')
                 let price = message.attachments[0].fields[0].value;
                 actions.forEach((action) => {
                     if (action.type === 'button' && action.name === 'raise') {
-                        price = String(Number(price) + Number(action.value));
+                        price = String(Number(price) + Number(action.value.slice(1)));
                     }
                 });
                 return res.json(message);
             } else {
-                console.log(typeof body.payload);
-                console.log(JSON.parse(String(body.payload)));
-                return res.json(body.payload.original_message);
+                console.log('no value');
+                return res.json(payload.original_message);
             }
         }
 
